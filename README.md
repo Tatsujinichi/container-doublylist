@@ -38,7 +38,7 @@ var myObject = myList.popBack();
 
 To **iterate** through the elements:
 ``` javascript
-for (var node = this.first; node !== null; node = node.next) {
+for (var node = myList.first; node !== null; node = node.next) {
 	node.object += 1;
 }
 ```

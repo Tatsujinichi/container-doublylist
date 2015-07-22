@@ -1,6 +1,6 @@
 {
   "name": "container-doublylist",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "DoublyList implementation in JavaScript",
   "main": "index.js",
   "scripts": {
