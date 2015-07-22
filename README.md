@@ -1,8 +1,10 @@
 # container-doublylist
 DoublyList implementation in JavaScript
 
-To manage a list of elements from which elements are frequently being removed.
-Complexity in O(1) for addition and removal. Iteration seem as fast as iterating through arrays
+To manage a list of elements. Best use case: elements are frequently removed from the list.
+Complexity in O(1) for addition and removal.
+
+Note: Benchmarks seem to show that iteration seem as fast as array iteration.
 
 To **instanciate** a new list:
 ``` javascript
@@ -13,9 +15,9 @@ To **add** an element:
 ``` javascript
 var myObjectReference = myList.add(myObject); // add on front by default
 // or
-var myObjectReference = myList.addFront(myObject); // add on front
+var myObjectReference = myList.addFront(myObject);
 // or
-var myObjectReference = myList.addBack(myObject); // add on back
+var myObjectReference = myList.addBack(myObject);
 ```
 
 To **remove** an element:
@@ -29,9 +31,9 @@ To **pop** an element:
 ``` javascript
 var myObject = myList.pop(); // pop from front by default
 // or
-var myObject = myList.popFront(); // pop from front
+var myObject = myList.popFront();
 // or
-var myObject = myList.popBack(); // pop from back
+var myObject = myList.popBack();
 ```
 
 To **iterate** through the elements:
