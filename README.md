@@ -2,11 +2,11 @@
 DoublyList implementation in JavaScript
 
 To manage a list of elements. Best use case: elements are frequently removed from the list.
-Complexity in O(1) for addition and removal.
+**Complexity in O(1) for addition and removal**.
 
-Note: Benchmarks seem to show that iteration seem as fast as array iteration.
+Note: Benchmarks seem to show that **list iteration is as fast as array iteration** on all major browsers.
 
-To **instanciate** a new list:
+To **instantiate** a new list:
 ``` javascript
 var myList = new DoublyList();
 ```
