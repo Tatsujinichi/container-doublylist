@@ -8,16 +8,20 @@
  * Method      Time Complexity
  * ___________________________________
  *
- * add         O(1)
- * remove      O(1)
- * clear       O(n)
+ * add (front and back)    O(1)
+ * pop (front and back)    O(1)
+ * remove by reference     O(1)
+ * remove                  O(n)
+ * moveToBeginning         O(1)
+ * moveToEnd               O(1)
+ * clear                   O(n)
  *
  * Memory Complexity in O(n)
  */
 
-function ListNode(obj, prev, next, container) {
+function ListNode(obj, previous, next, container) {
 	this.object    = obj;
-	this.prev      = prev;
+	this.previous  = previous;
 	this.next      = next;
 	this.container = container;
 }
@@ -35,13 +39,14 @@ DoublyList.prototype.addFront = function (obj) {
 		this.first = newNode;
 		this.last  = newNode;
 	} else {
-		this.first.prev = newNode;
-		this.first      = newNode;
+		this.first.previous = newNode;
+		this.first          = newNode;
 	}
 
 	this.length += 1;
 	return newNode;
 };
+
 DoublyList.prototype.add = DoublyList.prototype.addFront;
 
 DoublyList.prototype.addBack = function (obj) {
@@ -58,17 +63,74 @@ DoublyList.prototype.addBack = function (obj) {
 	return newNode;
 };
 
-DoublyList.prototype.popFront = function (obj) {
+DoublyList.prototype.popFront = function () {
 	var object = this.first.object;
 	this.removeByReference(this.first);
 	return object;
 };
+
 DoublyList.prototype.pop = DoublyList.prototype.popFront;
 
-DoublyList.prototype.popBack = function (obj) {
+DoublyList.prototype.popBack = function () {
 	var object = this.last.object;
 	this.removeByReference(this.last);
 	return object;
+};
+
+DoublyList.prototype.moveToTheBeginning = function (node) {
+	if (!node || node.container !== this) {
+		return false;
+	}
+
+	if (node.previous === null) {
+		// node is already the first one
+		return true;
+	}
+
+	// Connecting previous node to next node
+	node.previous.next = node.next;
+
+	if (this.last === node) {
+		this.last = node.previous;
+	} else {
+		// Connecting next node to previous node
+		node.next.previous = node.previous;
+	}
+
+	// Adding at the beginning
+	node.previous = null;
+	node.next = this.first;
+	node.next.previous = node;
+	this.first = node;
+	return true;
+};
+
+DoublyList.prototype.moveToTheEnd = function (node) {
+	if (!node || node.container !== this) {
+		return false;
+	}
+
+	if (node.next === null) {
+		// node is already the last one
+		return true;
+	}
+
+	// Connecting next node to previous node
+	node.next.previous = node.previous;
+
+	if (this.first === node) {
+		this.first = node.next;
+	} else {
+		// Connecting previous node to next node
+		node.previous.next = node.next;
+	}
+
+	// Adding at the end
+	node.next = null;
+	node.previous = this.last;
+	node.previous.next = node;
+	this.last = node;
+	return true;
 };
 
 DoublyList.prototype.removeByReference = function (node) {
@@ -78,15 +140,15 @@ DoublyList.prototype.removeByReference = function (node) {
 	}
 
 	if (node.next === null) {
-		this.last = node.prev;
+		this.last = node.previous;
 	} else {
-		node.next.prev = node.prev;
+		node.next.previous = node.previous;
 	}
 
-	if (node.prev === null) {
+	if (node.previous === null) {
 		this.first = node.next;
 	} else {
-		node.prev.next = node.next;
+		node.previous.next = node.next;
 	}
 
 	node.container = null;

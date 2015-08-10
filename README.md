@@ -36,6 +36,16 @@ var myObject = myList.popFront();
 var myObject = myList.popBack();
 ```
 
+To **move** an element to the beginning:
+``` javascript
+myList.moveToTheBeginning(myObjectReference);
+```
+
+To **move** an element to the end:
+``` javascript
+myList.moveToTheEnd(myObjectReference);
+```
+
 To **iterate** through the elements:
 ``` javascript
 for (var node = myList.first; node !== null; node = node.next) {
