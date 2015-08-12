@@ -1,0 +1,12 @@
+{
+  "name": "container-doublylist",
+  "version": "0.1.2",
+  "description": "DoublyList implementation in JavaScript",
+  "main": "index.js",
+  "author": "bchevalier",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wizcorp/container-doublylist.git"
+  }
+}
