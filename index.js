@@ -77,6 +77,40 @@ DoublyList.prototype.popBack = function () {
 	return object;
 };
 
+DoublyList.prototype.addBefore = function (node, obj) {
+	var newNode = new ListNode(obj, node.previous, node, this);
+
+	if (node.previous !== null) {
+		node.previous.next = newNode;
+	}
+
+	node.previous = newNode;
+
+	if (this.first === node) {
+		this.first = newNode;
+	}
+
+	this.length += 1;
+	return newNode;
+};
+
+DoublyList.prototype.addAfter = function (node, obj) {
+	var newNode = new ListNode(obj, node, node.next, this);
+
+	if (node.next !== null) {
+		node.next.previous = newNode;
+	}
+
+	node.next = newNode;
+
+	if (this.last === node) {
+		this.last = newNode;
+	}
+
+	this.length += 1;
+	return newNode;
+};
+
 DoublyList.prototype.moveToTheBeginning = function (node) {
 	if (!node || node.container !== this) {
 		return false;

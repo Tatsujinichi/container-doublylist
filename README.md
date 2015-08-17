@@ -36,6 +36,16 @@ var myObject = myList.popFront();
 var myObject = myList.popBack();
 ```
 
+To **insert** an element **before** the given node:
+``` javascript
+var myOtherObjectReference = myList.addBefore(myObjectReference, myOtherObject);
+```
+
+To **insert** an element **after** the given node:
+``` javascript
+var myOtherObjectReference = myList.addAfter(myObjectReference, myOtherObject);
+```
+
 To **move** an element to the beginning:
 ``` javascript
 myList.moveToTheBeginning(myObjectReference);
