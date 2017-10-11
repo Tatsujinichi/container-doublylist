@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Wizcorp/container-doublylist/issues"
   },
-  "homepage": "https://github.com/Wizcorp/container-doublylist"
+  "homepage": "https://github.com/Wizcorp/container-doublylist",
+  "devDependencies": {
+    "mocha": "4.0.1"
+  }
 }
