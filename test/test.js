@@ -376,6 +376,40 @@ describe('container-doublylist tests', function() {
 			assert.strictEqual(0, i);
 		});
 
+		it('should iterate FORWARDS correctly while popping', function () {
+			dlist.addBack(1);
+			dlist.addBack(2);
+			dlist.addBack(3);
+			dlist.addBack(4);
+			dlist.addBack(5);
+
+			var expectedValues = [1];
+			var actualValues = [];
+
+			for (var node = dlist.first; node !== null; node = node.next) {
+				var popped = dlist.popFront();
+				actualValues.push(popped);
+			}
+			assert.deepStrictEqual(expectedValues, actualValues);
+		});
+
+		it('should iterate BACKWARDS correctly while popping', function () {
+			dlist.addBack(1);
+			dlist.addBack(2);
+			dlist.addBack(3);
+			dlist.addBack(4);
+			dlist.addBack(5);
+
+			var expectedValues = [1, 2, 3];
+			var actualValues = [];
+
+			for (var node = dlist.last; node !== null; node = node.previous) {
+				var popped = dlist.popFront();
+				actualValues.push(popped);
+			}
+			assert.deepStrictEqual(expectedValues, actualValues);
+		});
+
 		it('should iterate correctly while modifying the list in the loop, FORWARDS FORWARDS', function () {
 			dlist.addBack(1);
 			dlist.addBack(2);
@@ -564,6 +598,40 @@ describe('container-doublylist tests', function() {
 			assert.strictEqual(0, i);
 		});
 
+		it('should iterate FORWARDS correctly while popping', function () {
+			dlist.addBack(1);
+			dlist.addBack(2);
+			dlist.addBack(3);
+			dlist.addBack(4);
+			dlist.addBack(5);
+
+			var expectedValues = [5, 4, 3];
+			var actualValues = [];
+
+			for (var node = dlist.first; node !== null; node = node.next) {
+				var popped = dlist.popBack();
+				actualValues.push(popped);
+			}
+			assert.deepStrictEqual(expectedValues, actualValues);
+		});
+
+		it('should iterate BACKWARDS correctly while popping', function () {
+			dlist.addBack(1);
+			dlist.addBack(2);
+			dlist.addBack(3);
+			dlist.addBack(4);
+			dlist.addBack(5);
+
+			var expectedValues = [5];
+			var actualValues = [];
+
+			for (var node = dlist.last; node !== null; node = node.previous) {
+				var popped = dlist.popBack();
+				actualValues.push(popped);
+			}
+			assert.deepStrictEqual(expectedValues, actualValues);
+		});
+
 		it('should iterate correctly while modifying the list in the loop, FORWARDS FORWARDS', function () {
 			dlist.addBack(1);
 			dlist.addBack(2);
@@ -572,7 +640,7 @@ describe('container-doublylist tests', function() {
 			dlist.addBack(5);
 
 			var actualValues = [];
-			var expectedValues = [1, 2, 3, 4, 2, 3]; // 1234, 23, 3
+			var expectedValues = [1, 2, 3, 4, 2, 3, 3]; // 1234, 23, 3
 
 			for (var node = dlist.first; node !== null; node = node.next) {
 				dlist.popBack();
@@ -590,8 +658,8 @@ describe('container-doublylist tests', function() {
 			dlist.addBack(4);
 			dlist.addBack(5);
 
-			var actualValues = [5];
-			var expectedValues = [5];
+			var actualValues = [];
+			var expectedValues = [1, 2, 1, 3]; // 1, 21, 3
 
 			for (var node = dlist.first; node !== null; node = node.next) {
 				dlist.popBack();
@@ -599,6 +667,7 @@ describe('container-doublylist tests', function() {
 					actualValues.push(innerNode.object);
 				}
 			}
+
 			assert.deepStrictEqual(expectedValues, actualValues);
 		});
 
@@ -610,7 +679,7 @@ describe('container-doublylist tests', function() {
 			dlist.addBack(5);
 
 			var actualValues = [];
-			var expectedValues = [];
+			var expectedValues = [5];
 
 			for (var node = dlist.last; node !== null; node = node.previous) {
 				dlist.popBack();
@@ -630,7 +699,7 @@ describe('container-doublylist tests', function() {
 			dlist.addBack(5);
 
 			var actualValues = [];
-			var expectedValues = [];
+			var expectedValues = [5];
 
 			for (var node = dlist.last; node !== null; node = node.previous) {
 				dlist.popBack();
@@ -648,8 +717,543 @@ describe('container-doublylist tests', function() {
 		beforeEach(function () {
 			dlist = new DoublyList();
 		});
-		it('should ', function () {
+		describe('should be able to move values between different lists', function () {
+			var oddList;
+			var node1;
+			var node3;
+			var node5;
+			var evenList;
+			var node2;
+			var node4;
+			var node6;
+			describe('remove first', function () {
+				beforeEach(function () {
+					oddList = new DoublyList();
+					node1 = oddList.addBack(1);
+					node3 = oddList.addBack(3);
+					node5 = oddList.addBack(5);
 
+					evenList = new DoublyList();
+					node2 = evenList.addBack(2);
+					node4 = evenList.addBack(4);
+					node6 = evenList.addBack(6);
+				});
+				it('replace first', function () {
+					oddList.removeByReference(node1);
+					evenList.addBefore(node2, node1.object);
+
+					// odd list = 3 5
+					// even list = 1 2 4 6
+
+					// check odds list
+					var expectedValues = [3, 5];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [5, 3];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [1, 2, 4, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 4, 2, 1];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+				it('replace last', function () {
+					oddList.removeByReference(node1);
+					evenList.addBefore(node6, node1.object);
+
+					// odd list = 3 5
+					// even list = 2 4 1 6
+
+					// check odds list
+					var expectedValues = [3, 5];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [5, 3];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [2, 4, 1, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 1, 4, 2];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+				it('replace middle', function () {
+					oddList.removeByReference(node1);
+					evenList.addBefore(node4, node1.object);
+
+					// odd list = 3 5
+					// even list = 2 1 4 6
+
+					// check odds list
+					var expectedValues = [3, 5];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [5, 3];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [2, 1, 4, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 4, 1, 2];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+			});
+			describe('remove last', function () {
+				beforeEach(function () {
+					oddList = new DoublyList();
+					node1 = oddList.addBack(1);
+					node3 = oddList.addBack(3);
+					node5 = oddList.addBack(5);
+
+					evenList = new DoublyList();
+					node2 = evenList.addBack(2);
+					node4 = evenList.addBack(4);
+					node6 = evenList.addBack(6);
+				});
+				it('replace first', function () {
+					oddList.removeByReference(node5);
+					evenList.addBefore(node2, node5.object);
+
+					// odd list = 1 5
+					// even list = 3 2 4 6
+
+					// check odds list
+					var expectedValues = [1, 3];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [3, 1];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [5, 2, 4, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 4, 2, 5];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+				it('replace last', function () {
+					oddList.removeByReference(node5);
+					evenList.addBefore(node6, node5.object);
+
+					// odd list = 1 3
+					// even list = 2 4 5 6
+
+					// check odds list
+					var expectedValues = [1, 3];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [3, 1];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [2, 4, 5, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 5, 4, 2];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+				it('replace middle', function () {
+					oddList.removeByReference(node5);
+					evenList.addBefore(node4, node5.object);
+
+					// odd list = 1 3
+					// even list = 2 5 4 6
+
+					// check odds list
+					var expectedValues = [1, 3];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [3, 1];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [2, 5, 4, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 4, 5, 2];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+			});
+			describe('remove middle', function () {
+				beforeEach(function () {
+					oddList = new DoublyList();
+					node1 = oddList.addBack(1);
+					node3 = oddList.addBack(3);
+					node5 = oddList.addBack(5);
+
+					evenList = new DoublyList();
+					node2 = evenList.addBack(2);
+					node4 = evenList.addBack(4);
+					node6 = evenList.addBack(6);
+				});
+				it('replace first', function () {
+					oddList.removeByReference(node3);
+					evenList.addBefore(node2, node3.object);
+
+					// odd list = 1 5
+					// even list = 3 2 4 6
+
+					// check odds list
+					var expectedValues = [1, 5];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [5, 1];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [3, 2, 4, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 4, 2, 3];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+				it('replace last', function () {
+					oddList.removeByReference(node3);
+					evenList.addBefore(node6, node3.object);
+
+					// odd list = 1 5
+					// even list = 2 4 3 6
+
+					// check odds list
+					var expectedValues = [1, 5];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [5, 1];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [2, 4, 3, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 3, 4, 2];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+				it('replace middle', function () {
+					oddList.removeByReference(node3);
+					evenList.addBefore(node4, node3.object);
+
+					// odd list = 1 3 5
+					// even list = 2 3 4 6
+
+					// check odds list
+					var expectedValues = [1, 5];
+					var actualValues = [];
+
+					// forwards
+					for (var nodeF = oddList.first; nodeF !== null; nodeF = nodeF.next) {
+						assert.strictEqual(nodeF.container, oddList);
+						actualValues.push(nodeF.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [5, 1];
+					actualValues = [];
+
+					// backwards
+					for (var nodeL = oddList.last; nodeL !== null; nodeL = nodeL.previous) {
+						assert.strictEqual(nodeL.container, oddList);
+						actualValues.push(nodeL.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					// check evens list
+
+					expectedValues = [2, 3, 4, 6];
+					actualValues = [];
+
+					// forwards
+					for (var nodeFe = evenList.first; nodeFe !== null; nodeFe = nodeFe.next) {
+						assert.strictEqual(nodeFe.container, evenList);
+						actualValues.push(nodeFe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+
+					expectedValues = [6, 4, 3, 2];
+					actualValues = [];
+
+					// backwards
+					for (var nodeLe = evenList.last; nodeLe !== null; nodeLe = nodeLe.previous) {
+						assert.strictEqual(nodeLe.container, evenList);
+						actualValues.push(nodeLe.object);
+					}
+
+					assert.deepStrictEqual(expectedValues, actualValues);
+				});
+			});
+		});
+		describe('adding to a removedNode should error', function () {
+			
 		});
 	});
 

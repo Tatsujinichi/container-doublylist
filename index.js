@@ -185,6 +185,8 @@ DoublyList.prototype.removeByReference = function (node) {
 		node.previous.next = node.next;
 	}
 
+	node.previous = null;
+	node.next = null;
 	node.container = null;
 	this.length -= 1;
 
